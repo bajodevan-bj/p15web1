@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Diskon - 241011401855</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #0f172a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: #0f172a;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      color: #1e3a8a;
+      text-align: center;
+    }
+
+    .nim {
+      margin: 0 0 22px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button[type="submit"] {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    button[type="submit"]:hover {
+      background: #1d4ed8;
+    }
+
+    button.secondary {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    button.secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .error {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .result {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .result h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      color: #1e3a8a;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px dashed #cbd5e1;
+      font-size: 14px;
+    }
+
+    .row:last-of-type {
+      border-bottom: none;
+    }
+
+    .row span {
+      color: #475569;
+    }
+
+    .row strong {
+      text-align: right;
+      color: #0f172a;
+    }
+
+    .row.highlight {
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #dbeafe;
+      border-bottom: none;
+    }
+
+    .row.highlight span,
+    .row.highlight strong {
+      color: #1e3a8a;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .note {
+      margin: 14px 0 0;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Kalkulator Diskon</h1>
+    <p class="nim">NIM: 241011401855</p>
+
+    <form id="discountForm" novalidate>
+      <div class="field">
+        <label for="harga">Harga Awal (Rp)</label>
+        <input
+          type="number"
+          id="harga"
+          placeholder="Contoh: 250000"
+          step="any"
+          min="0"
+        />
+      </div>
+
+      <div class="field">
+        <label for="persen">Persentase Diskon (%)</label>
+        <input
+          type="number"
+          id="persen"
+          placeholder="Contoh: 20"
+          step="any"
+          min="0"
+          max="100"
+        />
+      </div>
+
+      <div class="actions">
+        <button type="submit">Hitung Diskon</button>
+        <button type="button" id="resetBtn" class="secondary">Reset</button>
+      </div>
+    </form>
+
+    <div id="error" class="error" role="alert" hidden></div>
+
+    <section id="hasil" class="result" hidden>
+      <h2>Hasil Perhitungan</h2>
+
+      <div class="row">
+        <span>Harga Awal</span>
+        <strong id="outHarga"></strong>
+      </div>
+
+      <div class="row">
+        <span>Persentase Diskon</span>
+        <strong id="outPersen"></strong>
+      </div>
+
+      <div class="row">
+        <span>Nilai Diskon</span>
+        <strong id="outDiskon"></strong>
+      </div>
+
+      <div class="row highlight">
+        <span>Total Bayar</span>
+        <strong id="outTotal"></strong>
+      </div>
+
+      <div class="row">
+        <span>Sisa Pembagian: Harga Awal % Persentase Diskon</span>
+        <strong id="outModulo"></strong>
+      </div>
+
+      <p class="note">
+        Operator wajib <strong>%</strong> diterapkan untuk menghitung sisa pembagian.
+        Input divalidasi: harga harus &gt; 0 dan persentase diskon harus &gt; 0 serta maksimal 100.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("discountForm");
+    const hargaInput = document.getElementById("harga");
+    const persenInput = document.getElementById("persen");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const errorBox = document.getElementById("error");
+    const hasilBox = document.getElementById("hasil");
+
+    const outHarga = document.getElementById("outHarga");
+    const outPersen = document.getElementById("outPersen");
+    const outDiskon = document.getElementById("outDiskon");
+    const outTotal = document.getElementById("outTotal");
+    const outModulo = document.getElementById("outModulo");
+
+    function formatRupiah(angka) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }).format(angka);
+    }
+
+    function formatAngka(angka) {
+      return new Intl.NumberFormat("id-ID", {
+        maximumFractionDigits: 2
+      }).format(angka);
+    }
+
+    function sembunyikanHasil() {
+      hasilBox.hidden = true;
+      errorBox.hidden = true;
+      errorBox.innerHTML = "";
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      sembunyikanHasil();
+
+      const hargaRaw = hargaInput.value.trim();
+      const persenRaw = persenInput.value.trim();
+
+      const harga = Number(hargaRaw);
+      const persen = Number(persenRaw);
+
+      const errors = [];
+
+      // Aturan logika digit ketiga dari belakang = 8:
+      // memeriksa validitas input dan menolak nilai tidak sesuai.
+      if (hargaRaw === "") {
+        errors.push("Harga awal wajib diisi.");
+      } else if (!Number.isFinite(harga)) {
+        errors.push("Harga awal harus berupa angka yang valid.");
+      }
+
+      if (persenRaw === "") {
+        errors.push("Persentase diskon wajib diisi.");
+      } else if (!Number.isFinite(persen)) {
+        errors.push("Persentase diskon harus berupa angka yang valid.");
+      }
+
+      if (Number.isFinite(harga) && harga <= 0) {
+        errors.push("Harga awal harus lebih dari 0.");
+      }
+
+      if (Number.isFinite(persen) && (persen <= 0 || persen > 100)) {
+        errors.push("Persentase diskon harus lebih dari 0 dan maksimal 100.");
+      }
+
+      if (errors.length > 0) {
+        errorBox.innerHTML = errors.map((item) => `• ${item}`).join("<br>");
+        errorBox.hidden = false;
+        return;
+      }
+
+      // Perhitungan kalkulator diskon
+      const nilaiDiskon = (harga * persen) / 100;
+      const totalBayar = harga - nilaiDiskon;
+
+      // Operator wajib: % / modulo
+      const sisaPembagian = harga % persen;
+
+      outHarga.textContent = formatRupiah(harga);
+      outPersen.textContent = `${formatAngka(persen)}%`;
+      outDiskon.textContent = formatRupiah(nilaiDiskon);
+      outTotal.textContent = formatRupiah(totalBayar);
+      outModulo.textContent = formatAngka(sisaPembagian);
+
+      hasilBox.hidden = false;
+    });
+
+    resetBtn.addEventListener("click", function () {
+      form.reset();
+      sembunyikanHasil();
+      hargaInput.focus();
+    });
+  </script>
+</body>
+</html>
